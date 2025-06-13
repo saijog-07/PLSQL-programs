@@ -1,0 +1,280 @@
+set serveroutput on;
+
+declare
+
+roll number;
+fee number;
+
+begin
+
+select roll, fee into roll, fee from Student
+where roll = 101;
+
+if fee<=200 then
+	update Student set fee = fee+100 where roll=101;
+
+else
+	update Student set fee = fee+100 where roll=101;
+end if;
+
+
+
+
+
+set serveroutput on;
+ 
+ 
+declare
+ 
+Name varchar2(100) = '&Enter_book_name';
+price number;
+type varchar2(100);
+
+begin
+ 
+select price, type into price, type from Books
+where name = Name;
+ 
+ 
+if type = 'IT' then 
+  dbms_output.put_line('Bonus is : ' || price * 0.05);
+ 
+ 
+else
+  dbms_output.put_line('Bonus is : ' || price * 0.10);
+ 
+end if;
+ 
+end;
+/
+
+
+
+
+
+
+set serveroutput on;
+
+declare
+  book_name varchar2(100) := '&enter_book_name';
+  book_price number;
+  book_type varchar2(100);
+  discount number;
+begin
+  select price, type into book_price, book_type
+  from books
+  where name = book_name;
+
+  if book_type = 'IT' then 
+    discount := book_price * 0.05;
+    dbms_output.put_line('Discount is: ' || discount);
+  else
+    discount := book_price * 0.10;
+    dbms_output.put_line('Discount is: ' || discount);
+  end if;
+
+update Books set price = price - discount where name = book_name;
+end;
+/
+
+
+
+set serveroutput on;
+
+create or replace ValidAge(age number) as
+
+begin
+
+if age >= 18 then
+dbms_output.put_line('Valid');
+else 
+dbms_output.put_line('Not valid');
+
+end if;
+end;
+/
+`
+set serveroutput on;
+
+create or replace function FindTotalSalary(salary number) return number as
+
+bonus number;
+total_salary number;
+
+begin
+
+if salary <= 5000 then
+	bonus := salary * 0.05;
+else
+	bonus := salary * 0.1;
+end if;
+
+total_salary := salary + bonus;
+
+dbms_output.put_line('Total salary is : ' || total_salary);
+
+return total_salary;
+end;
+/
+
+begin
+FindTotalSalary(7000);
+end;
+/
+
+
+
+
+set serveroutput on;
+
+create or replace function FindFactorial1(num number) return number as
+
+fact number := 1;
+
+begin
+
+for i in 1..num loop
+fact := fact * i;
+end loop;
+
+
+return fact;
+end;
+/
+
+
+create or replace procedure ValidAge(age in number) as
+
+begin
+
+if age >= 18 then
+
+dbms_output.put_line('Person is Eligible');
+
+else
+
+dbms_output.put_line('Person is not Eligible');
+
+end if;
+
+end;
+
+/
+
+
+create or replace procedure CalculateBonus(salary in number) as
+ 
+bonus number;
+total_sal number;
+
+begin
+
+bonus := salary * 0.05;
+total_sal := bonus + salary;
+
+dbms_output.put_line("Bonus is : " || bonus);
+dbms_output.put_line("Total salary is : " || total_sal);
+end;
+/
+
+
+
+set serveroutput on;
+
+create or replace procedure CalculateBonus2(salary in number, Bonus out number, Total_sal out number) as
+
+begin
+
+Bonus := salary * 0.05;
+Total_sal := Bonus + salary;
+
+end;
+/
+
+
+
+declare
+ 
+Bonus number;
+ 
+Total_sal number;
+salary number :=5000;
+
+begin
+ 
+CalculateBonus2(salary,Bonus,Total_sal);
+ 
+dbms_output.put_line('Total salary : '|| Total_sal);
+dbms_output.put_line('Bonus : '|| Bonus);
+ 
+end;
+ 
+/
+
+
+
+set serveroutput on;
+
+create or replace procedure GetSalary(dept in varchar2, salary out number) as
+
+begin
+
+if(dept = 'sales') then
+    salary := 20000;
+elsif(dept = 'admin') then
+    salary := 30000;
+elsif(dept = 'it') then
+    salary := 50000;
+else
+    salary := 0;
+
+end if;
+end;
+/
+
+declare
+
+dept varchar2(50) := '&dept';
+salary number;
+
+begin
+ 
+GetSalary(dept, salary);
+ 
+dbms_output.put_line('Your salary is : ' || salary);
+ 
+end;
+ 
+/
+
+
+
+
+// Triggers are stored procedures which are called or fired automatically.
+
+when we perform any DML command (Insert, update, delete)
+
+If we want to make changes in another table if we make changes in one table
+then we can use trigger
+
+
+
+
+create or replace trigger BankTransaction
+after insert
+on Transaction
+for each row
+when (NEW.Trans_type = 'deposit')
+
+begin
+
+	update customer
+	set balance = balance + :NEW.Amount
+	where Cust_id = :NEW.cust_id;
+
+end;
+
+/
+
+
+
